@@ -1,0 +1,71 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.main {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-color: black;
+  background-image: url('./images/the_pit.png');
+  background-size: cover;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-height: 10%;
+  color: red;
+  border: 1px solid red;
+}
+
+.header-left,
+.header-right {
+  display: flex;
+  width: 40%;
+  flex-direction: column;
+  margin: 5px;
+}
+
+.header-right {
+  margin-right: 20px;
+}
+
+.header-center {
+  flex-direction: column;
+  padding-top: 20px;
+  font-family: 'Yanone Kaffeesatz', sans-serif;
+  font-weight: 700;
+  font-size: xx-large;
+  width: 10%;
+  text-align: center;
+  color: gray;
+}
+
+.header-left-upper {
+  color: yellow;
+  font-family: 'Space Mono', monospace;
+  margin-left: 5px;
+}
+
+.header-left-lower,
+.header-right-lower {
+  font-family: 'Yanone Kaffeesatz', sans-serif;
+  color: yellow;
+  width: 100%;
+  background-color: red;
+  border: 1px solid yellow;
+  padding: 5px;
+  margin: 5px;
+}
+
+.header-right-upper {
+  font-family: 'Space Mono', monospace;
+  color: gray;
+  font-weight: 700;
+  font-style: italic;
+  text-align: end;
+}

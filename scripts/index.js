@@ -10,6 +10,14 @@ const WEAPON_HIERARCHY = new Map([
   ['paper', 'rock'],
 ]);
 
+// FIXME: Audio
+/*
+const PIT_THEME = new Audio();
+PIT_THEME.crossOrigin = 'anonymous';
+PIT_THEME.autoplay = true;
+document.body.appendChild(PIT_THEME);
+*/
+
 // this function returns either rock, paper, or scissors
 function computerPlay() {
   let computerResult = Math.floor(Math.random() * 3);
@@ -80,4 +88,4 @@ function game(iterations) {
   console.log(`${gamesLost} games lost`);
   console.log(`${gamesTied} games tied`);
 }
-game(3);
+// game(3);
