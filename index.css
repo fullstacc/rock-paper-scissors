@@ -6,6 +6,8 @@
 
 .main {
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   height: 100vh;
   width: 100vw;
   background-color: black;
@@ -13,13 +15,19 @@
   background-size: cover;
 }
 
-.header {
+.header,
+.footer {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  max-height: 10%;
+  min-height: 10%;
   color: red;
   border: 1px solid red;
+}
+
+.footer {
+  max-height: 12%;
+  min-height: 12%;
 }
 
 .header-left,
@@ -68,4 +76,29 @@
   font-weight: 700;
   font-style: italic;
   text-align: end;
+}
+
+.player-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  min-height: 140px;
+  min-width: 150px;
+  border: 1px solid blue;
+  margin-top: 28%;
+  padding-left: 40%;
+}
+
+.player-1 {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border: 1px solid yellow;
+  width: fit-content;
+  min-height: 200px;
+}
+
+.player-1 img {
+  width: 150px;
+  height: 300px;
 }
