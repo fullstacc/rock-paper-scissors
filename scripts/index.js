@@ -10,6 +10,58 @@ const WEAPON_HIERARCHY = new Map([
   ['paper', 'rock'],
 ]);
 
+// listeners
+let punchKey = document.getElementById('rock');
+let kickKey = document.getElementById('paper');
+let sweepKey = document.getElementById('scissors');
+let keys = document.querySelectorAll('.key');
+
+// characters
+let playerOne = document.querySelector('.player-1').lastChild;
+let playerTwo = document.querySelector('.player-2');
+
+function firePunch() {
+  punchKey.classList.add('firing');
+}
+
+function fireKick() {
+  kickKey.classList.add('firing');
+}
+
+function fireSweep() {
+  sweepKey.classList.add('firing');
+}
+
+function removeEffect(e) {
+  if (e.propertyName !== 'transform') return;
+  e.target.classList.remove('firing');
+}
+
+document.addEventListener('keydown', function (e) {
+  switch (e.code) {
+    case 'KeyA':
+      console.log(playerOne);
+      firePunch();
+      break;
+    case 'KeyS':
+      console.log(e);
+      fireKick();
+      break;
+    case 'KeyD':
+      console.log(e);
+      fireSweep();
+      break;
+  }
+  // if (e.code === 'KeyA') {
+  //   console.log(e.code);
+  // }
+});
+
+keys.forEach((key) => key.addEventListener('transitionend', removeEffect));
+// punch_key.addEventListener('click', (e) => {
+//   console.log(e);
+// });
+
 // FIXME: Audio
 /*
 const PIT_THEME = new Audio();

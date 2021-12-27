@@ -50,7 +50,7 @@
   font-size: xx-large;
   width: 10%;
   text-align: center;
-  color: gray;
+  color: red;
 }
 
 .header-left-upper {
@@ -84,21 +84,52 @@
   justify-content: space-between;
   min-height: 140px;
   min-width: 150px;
-  border: 1px solid blue;
+  /* border: 1px solid blue; */
   margin-top: 28%;
   padding-left: 40%;
+  padding-right: 40%;
 }
 
-.player-1 {
+.player-1,
+.player-2 {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  border: 1px solid yellow;
+  /* border: 1px solid yellow; */
   width: fit-content;
   min-height: 200px;
 }
 
-.player-1 img {
+.player-1 img,
+.player-2 img {
   width: 150px;
   height: 300px;
+}
+
+.key-area {
+  display: flex;
+  flex-direction: row;
+  min-width: 22%;
+  justify-content: space-between;
+  border: 1px solid blue;
+}
+.key {
+  display: flex;
+  border: 4px solid black;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Yanone Kaffeesatz', sans-serif;
+  font-weight: 700;
+  background-color: #1e1f26;
+  color: whitesmoke;
+  opacity: 0.8;
+  transition: all 0.07s;
+}
+
+.firing {
+  background-color: red;
+  transform: scale(1.1);
 }
