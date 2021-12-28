@@ -1,7 +1,16 @@
+let gameOver = false;
+let roundCounter = 0;
+
 const WEAPON_OPTIONS = new Map([
   [0, 'rock'],
   [1, 'paper'],
   [2, 'scissors'],
+]);
+
+const FIGHT_OPTIONS = new Map([
+  [0, 'punch'],
+  [1, 'kick'],
+  [2, 'sweep'],
 ]);
 
 const WEAPON_HIERARCHY = new Map([
@@ -10,6 +19,19 @@ const WEAPON_HIERARCHY = new Map([
   ['paper', 'rock'],
 ]);
 
+const FIGHT_HIERARCHY = new Map([
+  ['punch', 'sweep'],
+  ['kick', 'punch'],
+  ['sweep', 'kick'],
+]);
+
+let playerStrike = null;
+/*
+0: punch
+1: kick
+2: sweep
+*/
+
 // listeners
 let punchKey = document.getElementById('rock');
 let kickKey = document.getElementById('paper');
@@ -17,19 +39,41 @@ let sweepKey = document.getElementById('scissors');
 let keys = document.querySelectorAll('.key');
 
 // characters
-let playerOne = document.querySelector('.player-1').lastChild;
-let playerTwo = document.querySelector('.player-2');
+let playerOne = document.querySelectorAll('.player-1')[0].firstElementChild;
+let playerTwo = document.querySelectorAll('.player-2')[0].firstElementChild;
 
 function firePunch() {
+  playerStrike = 0;
   punchKey.classList.add('firing');
+
+  playerOne.setAttribute('src', './images/p1-punching.gif');
+  playerTwo.setAttribute('src', './images/p2-hit.gif');
+  setTimeout(() => {
+    playerOne.setAttribute('src', './images/p1-ready.gif');
+    playerTwo.setAttribute('src', './images/p2-ready.gif');
+  }, 400);
 }
 
 function fireKick() {
+  playerStrike = 1;
   kickKey.classList.add('firing');
+  playerOne.setAttribute('src', './images/p1-kicking.gif');
+  playerTwo.setAttribute('src', './images/p2-hit.gif');
+  setTimeout(() => {
+    playerOne.setAttribute('src', './images/p1-ready.gif');
+    playerTwo.setAttribute('src', './images/p2-ready.gif');
+  }, 800);
 }
 
 function fireSweep() {
+  playerStrike = 2;
   sweepKey.classList.add('firing');
+  playerOne.setAttribute('src', './images/p1-sweeping.gif');
+  playerTwo.setAttribute('src', './images/p2-hit.gif');
+  setTimeout(() => {
+    playerOne.setAttribute('src', './images/p1-ready.gif');
+    playerTwo.setAttribute('src', './images/p2-ready.gif');
+  }, 600);
 }
 
 function removeEffect(e) {
@@ -38,37 +82,33 @@ function removeEffect(e) {
 }
 
 document.addEventListener('keydown', function (e) {
-  switch (e.code) {
-    case 'KeyA':
-      console.log(playerOne);
-      firePunch();
-      break;
-    case 'KeyS':
-      console.log(e);
-      fireKick();
-      break;
-    case 'KeyD':
-      console.log(e);
-      fireSweep();
-      break;
+  if (!gameOver && roundCounter <= 5) {
+    switch (e.code) {
+      case 'KeyA':
+        firePunch();
+        // playerFight();
+        playGame();
+        roundCounter++;
+        break;
+      case 'KeyS':
+        fireKick();
+        // playerFight();
+        playGame();
+        roundCounter++;
+        break;
+      case 'KeyD':
+        fireSweep();
+        // playerFight();
+        playGame();
+        roundCounter++;
+        break;
+    }
+  } else {
+    console.log('game is over!!');
   }
-  // if (e.code === 'KeyA') {
-  //   console.log(e.code);
-  // }
 });
 
 keys.forEach((key) => key.addEventListener('transitionend', removeEffect));
-// punch_key.addEventListener('click', (e) => {
-//   console.log(e);
-// });
-
-// FIXME: Audio
-/*
-const PIT_THEME = new Audio();
-PIT_THEME.crossOrigin = 'anonymous';
-PIT_THEME.autoplay = true;
-document.body.appendChild(PIT_THEME);
-*/
 
 // this function returns either rock, paper, or scissors
 function computerPlay() {
@@ -77,11 +117,48 @@ function computerPlay() {
   return WEAPON_OPTIONS.get(computerResult);
 }
 
+function computerFight() {
+  let computerResult = Math.floor(Math.random() * 3);
+  return FIGHT_OPTIONS.get(computerResult);
+}
+
 function playerPlay() {
   const MESSAGE = 'Choose your weapon';
   let playerSelection = window.prompt(MESSAGE).toLowerCase();
   return playerSelection;
 }
+
+function playerFight() {
+  if (playerStrike !== null) {
+    return FIGHT_OPTIONS.get(playerStrike);
+  }
+}
+
+// compare player vs computer to determine who wins strike
+function fightRound(playerSelection, computerSelection) {
+  // animations for player 1
+  if (playerSelection === 'punch') {
+    firePunch();
+  } else if (playerSelection === 'kick') {
+    fireKick();
+  } else {
+    fireSweep();
+  }
+
+  let conclusion;
+  let playerWeakness = FIGHT_HIERARCHY.get(playerSelection);
+  let roundLoss = playerWeakness === computerSelection;
+  let roundDraw = playerSelection === computerSelection;
+
+  if (roundDraw) {
+    conclusion = 0;
+  } else if (roundLoss) {
+    conclusion = 1;
+  } else {
+    conclusion = 2;
+  }
+  return conclusion;
+} // end fightRound
 
 // compare player vs computer to determine who wins round
 function playRound(playerSelection, computerSelection) {
@@ -99,45 +176,48 @@ function playRound(playerSelection, computerSelection) {
   }
 }
 
-function game(iterations) {
-  let gamesPlayed = 0;
-  let gamesLost = 0;
-  let gamesWon = 0;
-  let gamesTied = 0;
+function playGame() {
+  let playerOneHealth = document
+    .querySelectorAll('.header-left-lower')[0]
+    .getAttribute('value');
 
-  let scores;
+  let playerTwoHealth = document
+    .querySelectorAll('.header-right-lower')[0]
+    .getAttribute('value');
 
-  for (let i = 1; i <= iterations; i++) {
-    gamesPlayed += 1;
-    let result = playRound(playerPlay(), computerPlay());
+  let result = fightRound(playerFight(), computerFight());
 
-    switch (result[1]) {
-      case 0:
-        gamesTied += 1;
-        console.log(result[0]);
-        break;
-      case 1:
-        gamesLost += 1;
-        console.log(result[0]);
-        break;
-      case 2:
-        gamesWon += 2;
-        console.log(result[0]);
-        break;
-    }
+  switch (result) {
+    case 0:
+      // gamesTied += 1;
+      console.log('toasty!');
+      let toasty = document.createElement('img');
+      toasty.classList.add('toasty');
+      toasty.setAttribute('src', './images/toasty.png');
+
+      let playerArea = document.querySelector('.player-row');
+      console.log(playerArea);
+      playerArea.appendChild(toasty);
+
+      setTimeout(() => {
+        playerArea.removeChild(playerArea.lastChild);
+      }, 500);
+
+      break;
+    case 1:
+      // gamesLost += 1;
+
+      playerOneHealth -= 33;
+      document
+        .querySelectorAll('.header-left-lower')[0]
+        .setAttribute('value', playerOneHealth);
+      break;
+    case 2:
+      playerTwoHealth -= 33;
+      document
+        .querySelectorAll('.header-right-lower')[0]
+        .setAttribute('value', playerTwoHealth);
+
+      break;
   }
-  // determine winner
-  if (gamesWon > gamesTied) {
-    console.log('you won!');
-  } else if (gamesWon === gamesTied) {
-    console.log("it's a draw");
-  } else {
-    console.log('you lose');
-  }
-
-  console.log(`${gamesPlayed} games played`);
-  console.log(`${gamesWon} games won`);
-  console.log(`${gamesLost} games lost`);
-  console.log(`${gamesTied} games tied`);
-}
-// game(3);
+} // end playGame
