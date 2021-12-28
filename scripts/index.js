@@ -1,5 +1,6 @@
 let gameOver = false;
 let roundCounter = 0;
+let winner;
 
 const WEAPON_OPTIONS = new Map([
   [0, 'rock'],
@@ -81,26 +82,35 @@ function removeEffect(e) {
   e.target.classList.remove('firing');
 }
 
+function gameOverCheck() {
+  if (gameOver) {
+    console.log('game over!');
+    console.log(`${winner} is winner!`);
+  }
+}
+
 document.addEventListener('keydown', function (e) {
   if (!gameOver && roundCounter <= 5) {
     switch (e.code) {
       case 'KeyA':
         firePunch();
-        // playerFight();
         playGame();
         roundCounter++;
+        gameOverCheck();
         break;
       case 'KeyS':
         fireKick();
         // playerFight();
         playGame();
         roundCounter++;
+        gameOverCheck();
         break;
       case 'KeyD':
         fireSweep();
         // playerFight();
         playGame();
         roundCounter++;
+        gameOverCheck();
         break;
     }
   } else {
@@ -185,39 +195,60 @@ function playGame() {
     .querySelectorAll('.header-right-lower')[0]
     .getAttribute('value');
 
-  let result = fightRound(playerFight(), computerFight());
+  // check if player has depleted health
+  function gameOverCheck() {
+    if (playerOneHealth <= 1 || playerTwoHealth <= 1 || roundCounter === 5) {
+      gameOver = true;
+      if (playerOneHealth === playerTwoHealth) {
+        winner = 'draw';
+      } else if (playerOneHealth > playerTwoHealth) {
+        winner = 'player-1';
+      } else {
+        winner = 'player-2';
+      }
+    }
+  } // end gameOverCheck
 
-  switch (result) {
-    case 0:
-      // gamesTied += 1;
-      console.log('toasty!');
-      let toasty = document.createElement('img');
-      toasty.classList.add('toasty');
-      toasty.setAttribute('src', './images/toasty.png');
+    //fightround does the logic for the moves and returns the winner
+    let result = fightRound(playerFight(), computerFight());
 
-      let playerArea = document.querySelector('.player-row');
-      console.log(playerArea);
-      playerArea.appendChild(toasty);
+    switch (result) {
+      case 0:
+        // gamesTied += 1;
+        let toasty = document.createElement('img');
+        toasty.classList.add('toasty');
+        toasty.setAttribute('src', './images/toasty.png');
 
-      setTimeout(() => {
-        playerArea.removeChild(playerArea.lastChild);
-      }, 500);
+        let playerArea = document.querySelector('.player-row');
+        playerArea.appendChild(toasty);
 
-      break;
-    case 1:
-      // gamesLost += 1;
+        setTimeout(() => {
+          playerArea.removeChild(playerArea.lastChild);
+        }, 500);
 
-      playerOneHealth -= 33;
-      document
-        .querySelectorAll('.header-left-lower')[0]
-        .setAttribute('value', playerOneHealth);
-      break;
-    case 2:
-      playerTwoHealth -= 33;
-      document
-        .querySelectorAll('.header-right-lower')[0]
-        .setAttribute('value', playerTwoHealth);
+        break;
+      case 1:
+        // gamesLost += 1;
 
-      break;
+        playerOneHealth -= 33;
+        document
+          .querySelectorAll('.header-left-lower')[0]
+          .setAttribute('value', playerOneHealth);
+
+        console.log(`player 1 health is ${playerOneHealth}`);
+        console.log(`player 2 health is ${playerTwoHealth}`);
+
+        break;
+      case 2:
+        playerTwoHealth -= 33;
+        document
+          .querySelectorAll('.header-right-lower')[0]
+          .setAttribute('value', playerTwoHealth);
+
+        console.log(`player 1 health is ${playerOneHealth}`);
+        console.log(`player 2 health is ${playerTwoHealth}`);
+
+        break;
+    }
   }
 } // end playGame
